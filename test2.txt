@@ -1,0 +1,49 @@
+#include<iostream>
+#include<cstdio>
+using namespace std;
+int n,count=0;
+char ass[10][10];
+bool field[10],attribute[10],ass_check[20],ass_check1[20];
+void f(int u)
+{
+	if(u==n)
+	{
+		for(int i=0;i<n;i++)
+		{
+			for(int j=0;j<n;j++)
+			{
+				printf("%c",ass[i][j]);
+			}
+			printf("\n");
+		}
+		count++;
+		printf("\n");
+		return ;
+	}
+	for(int i=0;i<n;i++)
+	{
+			if(field[i]==false&&ass_check[n+i-u]==false&&ass_check1[u+i]==false)
+			{
+				ass[u][i]='Q';
+				field[i]=true,ass_check[n+i-u]=true,ass_check1[u+i]=true;
+				f(u+1);
+				field[i]=false,ass_check[n+i-u]=false,ass_check1[u+i]=false;
+				ass[u][i]='.';
+			}
+		
+	}
+}
+int main()
+{
+
+	scanf("%d",&n);
+	for(int i=0;i<n;i++)
+	{
+		for(int j=0;j<n;j++)
+		{
+			ass[i][j]='.';
+		}
+	}
+	f(0);
+	printf("%d",count);
+}
