@@ -1,0 +1,30 @@
+#include<stdio.h>
+int main()
+{
+    int n=9;
+	float *pFloat=(float*)&n;
+	printf("%f\n",*pFloat);
+	printf("%d\n",n);
+	*pFloat=9.0;
+	printf("%f\n",*pFloat);
+	printf("%d\n",n);
+	return 0;
+} 
+#include<iostream>
+#include<cstdio>
+using namespace std;
+int arr[1010],V,N,w[1001],v[1001];
+int d(int a,int b)
+{
+	if(a>b) return a;
+	return b;
+}
+int main()
+{
+	scanf("%d%d",&N,&V);
+	for(int i=1;i<=N;i++) scanf("%d%d",&v[i],&w[i]);
+	for(int i=1;i<=N;i++)
+	   for(int j=V;j>=v[i];j--)
+	       arr[j]=d(arr[j],arr[j-v[i]]+w[i]); 
+	printf("%d",arr[V]);
+} 
