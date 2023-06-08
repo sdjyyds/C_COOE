@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+/*
+date:2023-4-13
+name:向加豪
+Topic: 二叉树的基本操作 
+*/
+typedef char DataType;
+typedef struct bnode{
+	DataType data;
+	struct bnode *Ichild,*Rchild; 
+}BTree;
+
+BTree *CreateBTree()
+{
+	BTree *bt;
+	char ch;
+	scanf("%c",&ch);
+	getchar();
+	if(ch=='#')
+	{
+		bt=NULL;
+	}
+	else
+	{
+		bt=(BTree*)malloc(sizeof(BTree));
+		bt->data=ch;
+		printf("请输入节点%c的左孩子：",bt->data);
+		bt->Ichild=CreateBTree();
+		printf("请输入节点%c的右孩子：",bt->data);
+		bt->Rchild=CreateBTree();
+	}
+	return bt;
+}
+//先序遍历 
+void ProOrder(BTree *bt)
+{
+	if(bt!=NULL)
+	{
+		printf("%c",bt->data);
+		ProOrder(bt->Ichild);
+		ProOrder(bt->Rchild);
+	}
+}
+//中序遍历
+void Inder(BTree *bt)
+{
+	if(bt!=NULL)
+	{
+		ProOrder(bt->Ichild);
+		printf("%c",bt->data);
+		ProOrder(bt->Rchild);
+	}
+}
+//后序遍历 
+void PInder(BTree *bt)
+{
+	if(bt!=NULL)
+	{
+		ProOrder(bt->Ichild);
+		ProOrder(bt->Rchild);
+		printf("%c",bt->data);
+	}
+}
+int main(int argc, char *argv[]) {
+	//1.定义二叉树
+	BTree *B;
+	//2.建立二叉树
+	B=CreateBTree();
+	//3. 先序遍历
+	ProOrder(B); 
+	return 0;
+}
