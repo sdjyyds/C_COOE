@@ -1,0 +1,185 @@
+//1.图的一系列操作
+#include<stdio.h>
+#include<stdlib.h>  
+//1.定义图
+#define N 1010
+typedef int DataType; 
+//(1)邻接矩阵
+typedef struct node{
+	DataType node[N];
+	int  cost[26][26];
+	int n,e;
+}Link_Graph;
+//(2)邻接表
+typedef struct node1{
+	int index;
+	struct node1 *next;
+}LinkListG;
+typedef struct node2{
+	DataType Data;
+	LinkListG *First_Node;
+}ListG;
+typedef struct node3{
+	ListG cost[N];
+	int n,e;
+}Graph;
+//2.初始化图
+//(1)初始化邻接矩阵 
+void Init_Graph1(Link_Graph *G,int flag)
+{
+	int i,j,w;
+	printf("请输入图的顶点和边的信息：");
+	scanf("%d%d",&G->n,&G->e);
+	for(i=0;i<G->n;i++)
+	{
+		printf("请输入第%d得节点的信息：",i+1);
+		scanf("%d",&G->node[i]);
+	}
+	printf("请按照 a b w 得形式输入节点的信息：");
+	for(i=0;i<G->e;i++)
+	{
+		int a,b,w,s=0;
+		int p1,p2;
+		scanf("%d %d %d",&a,&b,&w);
+		for(j=0;j<G->n;j++)
+		{
+			if(G->node[j]==a) s++,p1=j;
+			if(G->node[j]==b) s++,p2=j;
+			if(s==2) break;
+		}
+		G->cost[p1][p2]=w;
+		if(flag) G->cost[p2][p1]=w;
+	}
+} 
+//(2)初始化邻接表 
+void Init_Graph2(Graph *G,int flag)
+{
+	int i,j,k;
+	printf("请输入节点的顶点和边的的个数: ");
+	scanf("%d%d",&G->n,&G->e);
+	for(i=0;i<G->n;i++)
+	{
+		printf("请输入第%d的值：",i+1);
+		scanf("%d",&G->cost[i].Data);
+		G->cost[i].First_Node=NULL;
+	}
+	printf("请按照a b w的方式输入结点的信息：");
+	for(i=0;i<G->e;i++)
+	{
+		int a,b,w,s=0;
+		int p1,p2;
+		scanf("%d %d %d",&a,&b,&w);
+		for(j=0;j<G->n;j++)
+		{
+			if(G->cost[j].Data==a) s++,p1=j;
+			else if(G->cost[j].Data==b) s++,p2=j;
+			if(s==2) break;
+		}
+		LinkListG *p;
+		p=(LinkListG*)malloc(sizeof(LinkListG));
+		p->next=G->cost[p1].First_Node;
+		p->index=p2;
+		G->cost[p1].First_Node=p;
+		if(flag)
+		{
+			p=(LinkListG*)malloc(sizeof(LinkListG));
+			p->next=G->cost[p2].First_Node;
+			p->index=p1;
+			G->cost[p2].First_Node=p;
+		}
+	} 
+}
+//输出图的邻接表
+void Print_Graph(Graph *G)
+{
+	int i=0;
+	for(i=0;i<G->n;i++)
+	{
+		printf("%d %d -",i,G->cost[i].Data);
+		LinkListG *p=G->cost[i].First_Node;
+		while(p!=NULL)
+		{
+			printf("---->%d",p->index);
+			p=p->next;
+		}
+		puts(""); 
+	}
+} 
+//3.深度探索
+//邻接表为例
+int visited1[N];
+void DFS_G(Graph *G,int vi)
+{
+	if(!visited1[vi])
+	{
+		printf("%d ",G->cost[vi].Data),visited1[vi]=1;
+		LinkListG *p=G->cost[vi].First_Node;
+	while(p!=NULL)
+	{
+		DFS_G(G,p->index);
+		p=p->next;
+	}
+}
+} 
+//4.广度探索
+int visited[N];
+void BFS_G(Graph *G,int vi)
+{
+	printf("%d ",G->cost[vi].Data);
+	LinkListG *p;
+	visited[vi]=1;
+	int Que_G_node[N];
+	int l=0,r=0,v;
+	if(G->cost[vi].First_Node!=NULL) Que_G_node[0]=vi,l=0,r=1;
+	while(l<r)
+	{
+		v=Que_G_node[l];		
+		p=G->cost[v].First_Node;
+		while(p!=NULL)
+		{
+			if(!visited[p->index])
+			{
+				visited[p->index]=1;
+				printf("%d ",G->cost[p->index].Data);
+				Que_G_node[r]=p->index;	
+				r=(r+1)%N;
+			}
+			p=p->next;
+		}
+		l=(l+1)%N;
+	}
+}
+
+//5.普利姆算法 -最小生成树 
+//6.克鲁斯卡尔算法 - 最小生成树
+//7.迪杰斯特拉算法 - 最短路径
+int main()
+{
+	int i,j;
+//	Link_Graph *G=(Link_Graph*)malloc(sizeof(Link_Graph));
+//	Init_Graph1(G,1);
+//	for(i=0;i<G->n;i++)
+//	{
+//		for(j=0;j<G->n;j++) printf("%2d ",G->cost[i][j]);
+//		puts("");
+//	}
+    Graph *G=(Graph*)malloc(sizeof(Graph));
+	Init_Graph2(G,1);
+	Print_Graph(G);
+	DFS_G(G,1);
+	puts("");
+	BFS_G(G,1);
+	return 0;
+} 
+//6 5
+//1
+//2
+//3
+//4
+//5
+//6
+//1 2 5
+//1 6 2
+//2 3 4
+//3 4 10
+//4 5 15

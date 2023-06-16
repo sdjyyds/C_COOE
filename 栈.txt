@@ -1,0 +1,133 @@
+//1.栈的定义
+last in first out//先进后出
+//1.顺序栈
+#include<stdio.h> 
+#include<stdlib.h>
+#define N 100010
+//1.定义顺序栈
+typedef char DataType;
+typedef struct {
+	DataType Data[N];
+	int top; 
+}SeqStack;
+//2.初始化
+void Init_Stack(SeqStack *S)
+{
+	S->top=-1;
+}
+//3.判断栈空
+int empty_Stack(SeqStack *S)
+{
+	if(S->top==-1) return 1;
+	else return 0;
+} 
+//3.入栈
+void push_Stack(SeqStack *S,int x)
+{
+	if(S->top+1==N) printf("栈已满，无法再入栈！\n");
+	else
+	{
+		S->top++;
+		S->Data[S->top]=x;
+	}
+}
+//4.出栈
+void pop_Stack(SeqStack *S)
+{
+	if(empty_Stack(S))	printf("栈是空的！无元素可以出栈！\n");
+	else	S->top--;
+}
+//5.打印栈顶元素
+void Print_Stack_Top(SeqStack *S)
+{
+	if(empty_Stack(S)) printf("栈是空的！无栈顶元素！\n");
+	else printf("栈顶元素为：%c\n",S->Data[S->top]);
+}
+//6.输出所有元素
+void Print_All_Stack(SeqStack *S)
+{
+	int q=S->top;
+	while(q>=0)
+	{
+		printf("%c ",S->Data[q]);
+		q--;
+	}
+	puts("");
+} 
+
+
+
+//2.链栈
+#include<stdio.h>
+#include<stdlib.h>
+//1.定义链栈 
+typedef char DataType;
+typedef struct stacknode{
+	DataType data;
+	stacknode *next; 
+}LinkStack;
+//2.初始化
+LinkStack *Init_Stack()
+{
+	LinkStack *S;
+	S=NULL;
+	return S;
+}
+//3.判断栈空
+int empty_Stack(LinkStack *S)
+{
+	if(S==NULL) return 1;
+	else return 0; 
+}
+//4.进栈
+LinkStack* push_Stack(LinkStack *S,DataType x)
+{
+	LinkStack *p;
+	p=(LinkStack*)malloc(sizeof(LinkStack));
+	p->data=x; 
+	p->next=S;
+	S=p;
+	return S;
+}
+//5.出栈
+LinkStack* pop_Stack(LinkStack *S,DataType *x)
+{
+	LinkStack *p;
+	if(empty_Stack(S))
+	{
+		printf("栈空！不能出栈！\n");
+		return NULL;
+	}
+	else
+	{
+		*x=S->data;
+		p=S;
+		S=S->next;
+		free(p);
+		return S;
+	}
+}
+//6.取栈顶元素
+void get_Stack_top(LinkStack *S,DataType *x)
+{
+	if(empty_Stack(S))
+	{
+		printf("栈空！");
+		
+	}
+	else
+	{
+		*x=S->data;
+	}
+}
+//7.显示所有元素 
+void show_Stack_elem(LinkStack *S)
+{
+	LinkStack *p=S;
+	while(p!=NULL)
+	{
+		printf("%c ",p->data);
+		p=p->next;
+	}
+	puts("");
+} 
