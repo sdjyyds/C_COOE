@@ -1,0 +1,44 @@
+#include<stdio.h>
+int main()
+{
+    int a;
+    scanf("%d",&a);
+    for(int i=0;i<a;i++)
+    {
+        int b,countQ=0,countA=0,c;
+        scanf("%d",&b);
+        getchar();
+        char ass[101];
+        gets(ass);
+        for(int i=0;i<b;i++) if(ass[i]=='Q') c=i;
+		for(int i=c;i>=0;i--)
+		{
+			if(ass[i]=='Q') countQ++;
+			else break;
+		}
+		if(c!=b-1)
+		{
+			for(int i=c+1;i<b;i++) countA++;
+		}
+		if(countA<countQ)
+		{
+			printf("No");
+			continue;
+		}
+		for(int j=0;j<b;j++)
+        {
+        	countQ=0,countA=0;
+            if(ass[j]=='Q'&&ass[j+1]!='Q')
+            {
+            	
+			if(ass[j]=='Q') countQ++;
+            else if(ass[j]=='A') countA++;
+        }
+        }
+        //printf("%d %d\n",countQ,countA);
+        if(countQ<=countA&&ass[b-1]!='Q') printf("Yes");
+        else printf("No");
+        printf("\n");
+    }
+    return 0;
+}

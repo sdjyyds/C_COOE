@@ -1,0 +1,184 @@
+串
+特点：特殊的线性表，只对字符处理。
+
+1.顺序串
+#include<stdio.h>
+#include<stdlib.h>
+#define MaxSize 100
+//1.定义顺序串 
+typedef struct{
+	char data[MaxSize];
+	int length;
+}String;
+//2.串的赋值
+void Init_String(char a[],String *S)
+{
+	int i=0;
+	for(i=0;a[i]!='\0';i++)
+	{
+		S->data[i]=a[i];
+	}
+	S->length=i;
+} 
+//3.串的复制 
+void Copy_String(String *S,String *T)
+{
+	int i;
+	for(i=0;i<S->length;i++) T->data[i]=S->data[i];
+	T->length=S->length;
+}
+//4.求串的长度
+int GetStringLength(String *S)
+{
+	int i=0;
+	while(S->data[i]!='\0') i++;
+	S->length=i;
+	return i;
+}
+//5.串的连接
+void StrCat(String *S,String *T)
+{
+	int i;
+	for(i=0;i<T->length;i++) S->data[i+S->length]=T->data[i];
+	S->length+=T->length;
+}
+//6.求字串
+void SubString(String *Sub,String *S,int pos,int len)
+{
+	if(pos<0||pos+len-1>S->length||pos>S->length)
+	{
+		printf("输入位置不合法,无此字串！\n");
+		Sub->length=0;
+	}
+	else
+	{
+		int i;
+		for(i=0;i<len;i++)
+		{
+			Sub->data[i]=S->data[pos+i-1];
+		}
+		Sub->length=len;
+	}
+}
+//7.串的定位kmp
+int StrIndex(String *S,String *T)
+{
+	int i=0,j=0,k;
+	while(i<S->length&&j<T->length)
+	{
+		if(S->data[i]==T->data[j])
+		{
+			i++;
+			j++;
+		}
+		else
+		{
+			i=i-j+1;
+			j=0;
+		}
+	}
+	if(j>=T->length) k=i-T->length+1;
+	else k=-1;
+	return k;
+}
+//8.串的插入
+void InserStr(String *S,String *T,int i)
+{
+	int k;
+	if(i>S->length+1)
+	{
+		printf("不合法的位置！无法插入！\n");
+	}
+	else if(S->length+T->length>MaxSize)
+	{
+		printf("两串超过存储空间！\n");
+	}
+	else
+	{
+		for(k=S->length-1;k>=i-1;k--)	S->data[T->length+k]=S->data[k];
+		for(k=0;k<T->length;k++) S->data[i+k-1]=T->data[k];
+		S->length=S->length+T->length;
+		S->data[S->length]='\0'; 
+	}
+}
+//9.串的删除
+void DelString(String *S,int i,int l)
+{
+	if(i+l-1>S->length)
+	{
+		printf("删除的位置不合法！\n");
+	}
+	else
+	{
+		int k;
+		for(k=i+l-1;k<S->length;k++,i++) S->data[i-1]=S->data[k];
+		S->length=S->length-l;
+		S->data[S->length]='\0';
+	}
+}
+//10.串的替换
+void ReplaceString(String *S,String *T,String *V)
+{
+	int i,m,n,p,q;
+	n=S->length;
+	m=T->length;
+	q=V->length;
+	p=1;
+	do{
+		i=StrIndex(S,T);
+		if(i!=-1)
+		{
+			DelString(S,i,m);
+			InserStr(S,V,i);
+			p=i+q;
+			S->length=S->length+q-m;
+			n=S->length;
+		}
+	}while(p<=n-m+1&&(i!=-1));
+}
+
+//11.判断串空
+int empty_Stirng(String *S)
+{
+	if(S->length==0) return 1;
+	else return 0;
+}
+//12.清空串
+void CleanString(String *S)
+{
+	S->length=0;
+}
+//13.输出串 
+void PrintStirng(String *S)
+{
+	int i;
+	for(i=0;i<S->length;i++) printf("%c",S->data[i]);
+	puts("");
+}
+
+
+广义表
+1.特点：线性表的推广，广义表的元素既可以是原子项，也可以是子表。
+#include<stdio.h>
+#include<stdlib.h>
+//1.头尾表示法 
+typedef char DataType;
+typedef enum{ATOM,LIST}ElemTag;
+typedef struct GLNode{
+	ElemTag Tag;
+	union{
+		DataType atom;
+		struct{
+			struct GLNod *hp,*tp;
+		}ptr;
+	};
+}*GList;
+//2.孩子兄弟表示法
+typedef enum{ATOM,LIST}ElemTag;
+typedef struct GLNode{
+	ElemTag Tag;
+	union{
+		DataType atom;
+		struct GLNode *hp;
+	};
+}*GList; 

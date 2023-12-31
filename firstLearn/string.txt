@@ -1,0 +1,136 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include"define.h"
+//1.串的初始化
+void InitStr(String &S,char a[])
+{
+	int i;
+	for (i = 0; a[i]; i++) S.ch[i] = a[i];
+	S.length = i;
+}
+//2.串的复制
+void StrCopy(String &S, String &T)
+{
+	for (int i = 0; i < S.length; i++) T.ch[i] = S.ch[i];
+	T.length = S.length;
+}
+//3.求串的长度
+int GetStrLength(String &S)
+{
+	return S.length;
+}
+//4.串的连接
+void Strcat(String &S, String &T)
+{
+	if (S.length == N) printf("已经满，无法连接！\n");
+	else if (S.length + T.length > N)
+	{
+		for (int i = S.length; i < N; i++)S.ch[i] = T.ch[i - S.length];
+		S.length = N;
+	}
+	else
+	{
+		for (int i = S.length; i < S.length + T.length; i++)S.ch[i] = T.ch[i - S.length];
+		S.length += T.length;
+	}
+}
+//5.求子串
+void GetSubStr(String &S,String &Sub,int pos,int len)
+{
+	if (pos<1 || pos + len - 1>S.length || len > S.length) printf("输入位置不合法！无法求得字串！\n");
+	else
+	{
+		for (int i = 0; i < len; i++)Sub.ch[i] = S.ch[pos - 1 + i];
+		Sub.ch[len] = '\0';
+		Sub.length = len;
+	}
+}
+//6.串的定位
+int StrIndex(String &S, String &T)
+{
+	if (S.length < T.length) return -1;
+	int i=0, j=0;
+	while(i<S.length)
+	{
+		if (S.ch[i] == T.ch[j])j++,i++;
+		else j = 0, i = i - j + 1;
+		if (j >= T.length) return i - T.length + 1;
+	}
+	return -1;
+}
+//7.串的插入
+void StrInsert(String &S, int pos, String &T)
+{
+	if (S.length == N)printf("已满，无法插入！\n");
+	if (pos<1 || pos>S.length+1) printf("插入位置不合法！无法插入！\n");
+	else if (S.length+ T.length > N)//此时为1，出现数组的溢出
+	{
+		int i = 0;
+		for (int i = S.length - 1, j = 0; i >=pos-1 ; i--, j++) S.ch[N - 1 - j] = S.ch[i];
+		for (i = 0; i < N-S.length; i++) S.ch[pos + i - 1] = T.ch[i];
+		S.length = N;
+		printf("插入一部分！\n");
+	}
+	else
+	{
+		for (int i = S.length + T.length - 1, j = S.length - 1; j >= pos - 1; i--, j--) S.ch[i] = S.ch[j];
+		for (int i = 0; i < T.length; i++) S.ch[pos - 1 + i] = T.ch[i];
+		S.length += T.length;
+		S.ch[S.length] = '\0';
+		printf("插入成功！\n");
+	}
+}
+//8.串的删除
+void StrDelete(String &S, int pos, int len)
+{
+	if (pos > S.length || pos<1 || pos + len - 1>S.length)printf("删除不合理！无法删除\n");
+	else
+	{
+		for (int i = pos + len - 1, j = 0; i < S.length; i++, j++)S.ch[pos - 1 + j] = S.ch[i];
+		S.length -= len;
+		printf("删除成功！\n");
+	}
+}
+//9.串的替换
+void StrReplace(String &S, String &T, String &V)
+{
+	int x = S.length, y = T.length, z = V.length;
+	int i=0, j=0;
+	do {
+		i = StrIndex(S, T);
+		printf("位置为%d\n", i);
+		if (i != -1)
+		{
+			StrDelete(S, i, y);
+			StrInsert(S, i, V);
+			x = x - y + z;
+		}
+	} while (x<N&&i!=-1);
+}
+//10.判断串空
+void StrEmpty(String &S)
+{
+	if (S.length == 0) printf("串空！\n");
+	else printf("串不空！\n");
+}
+//11.串的比较
+int StrCompare(String &S,String &T)
+{
+	if (S.length != T.length) return -1;
+	else 
+	{
+		for (int i = 0; i < S.length; i++)
+			if (S.ch[i] != T.ch[i]) return -1;
+	}
+	return 0;
+}
+////12.串的清空
+void StrClear(String &S)
+{
+	S.length = 0;
+}
+//13.输出串
+void DisStr(String &S)
+{
+	for (int i = 0; i < S.length; i++) printf("%c", S.ch[i]);
+	puts("");
+}

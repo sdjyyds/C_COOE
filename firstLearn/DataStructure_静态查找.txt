@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+/*
+Date：2023-5-21
+Author:向加豪
+Topic:静态查找 
+ */
+const int N=10010;
+//1.定义关键字 
+typedef int KeyType;
+typedef struct node{
+	KeyType key;
+}SearchL;
+//定义索引表
+typedef struct{
+	KeyType max;
+	int low,high;
+}IndexL;
+//1.顺序查找 
+int SeqSearch(SearchL r[],int n,KeyType k)
+{
+	int i=n;
+	r[0].key=k;
+	while(r[i].key!=k) i--;
+	return (i);
+}
+//2.对半查找 
+int BinSearch(SearchL r[],int n,KeyType k)
+{
+	int l=1,r1=n;
+	while(l<=r1)
+	{
+		int mid=(l+r1)/2;
+		if(r[mid].key==k) return mid;
+		else if(r[mid].key>k) r1=mid-1;
+		else l=mid+1; 
+	}
+	return 0;
+}
+//3.分块查找
+int Create_block_L(SearchL r[],int n,IndexL idx[],int m)
+{
+	int i,j,k=0;
+	int max;
+	for(i=0;i<n;i+=m)
+	{
+		max=r[i].key;
+		for(j=i+1;j<n&&j<i+m;j++)
+		{
+			if(max<r[j].key) max=r[j].key;
+		}
+		idx[k].max=max, idx[k].low=i;
+		if(i+m-1<=n-1) idx[k].high=i+m-1;
+		else idx[k].high=n-1;
+		k++;
+	}
+	return k;
+}
+int BlikSearch(SearchL r[],IndexL idx[],KeyType key,int k)
+{
+	int i,j=0,l,r1;
+	while(idx[j].max<key) j++;
+	l=idx[j].low,r1=idx[j].high;
+	for(i=l;i<=r1;i++)
+	{
+		if(r[i].key==key) break;
+	}
+	if(i<=r1) return i;
+	else return -1;
+} 
+int main(int argc, char *argv[]) {
+	SearchL r[N];
+	IndexL idx[N];
+	int n,k,i,j;
+	scanf("%d",&n);
+	for(i=1;i<=n;i++) printf("请输入第%d个元素: ",i),scanf("%d",&r[i].key);
+	printf("请输入要查询的元素：");
+	scanf("%d",&k);
+	printf("顺序查找结果：");
+	int a=SeqSearch(r,n,k);
+	if(a) printf("%d\n",a);
+	else printf("无次元素! ");
+	printf("对半查找结果："); 
+	a=BinSearch(r,n, k);
+	if(a) printf("%d\n",a);
+	else printf("无次元素! ");
+	SearchL r1[N];
+	IndexL idx1[N];
+	int n1,k1,key1;
+	scanf("%d",&n1);
+	printf("请依次输入元素："); 
+	for(i=0;i<n1;i++) printf("请输入第%d个元素: ",i+1),scanf("%d",&r1[i].key);
+	printf("请输入要查询的元素：");
+	scanf("%d",&key1);
+	printf("请输入要分多少区：");
+	scanf("%d",&k1);
+	printf("分块查找："); 
+	Create_block_L(r1,n1,idx1,k1);
+	a=BlikSearch(r1,idx1,key1,k1);
+	if(a!=-1) printf("%d\n",a+1);
+	else printf("无次元素! ");
+	return 0;
+}
+//7
+//2
+//8
+//10
+//23
+//7
+//4
+//11
+//23
+//12
+//2 5 7 4 12 9 13 10 15 11 18 20
+//13
+//4

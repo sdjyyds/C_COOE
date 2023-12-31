@@ -1,0 +1,178 @@
+# define _CRT_SECURE_NO_WARNINGS 1
+#include"define.h"
+//1.遍历二叉树
+//1.1 DLR 先根遍历
+void PreOrder(Tree1* T)
+{
+	if (!T) return;
+	printf("%c", T->data);
+	PreOrder(T->lchild);
+	PreOrder(T->rchild);
+}
+//1.2 LDR 中根遍历
+void InOrder(Tree1* T)
+{
+	if (!T)return;
+	InOrder(T->lchild);
+	printf("%c", T->data);
+	InOrder(T->rchild);
+}
+//1.3 LDR 后根遍历
+void PostOrder(Tree1* T)
+{
+	if (!T) return;
+	PostOrder(T->lchild);
+	PostOrder(T->rchild);
+	printf("%c", T->data);
+}
+//1.4 层次遍历
+void LevelOrder(Tree1* T)
+{
+	Tree1* Q[N];
+	int f = 0, r = -1;
+	if (!T) return;
+	else
+	{
+		Q[++r] = T;
+		while (r >= f)
+		{
+			Tree1* p = Q[f];
+			f=(f+1)%N;
+			printf("%c", p->data);
+			if (p->lchild) r = (r + 1) % N, Q[r] = p->lchild;
+			if (p->rchild) r = (r + 1) % N, Q[r] = p->rchild;
+		}
+	}
+}
+//2.二叉树的建立
+Tree1* CreateTree1()
+{
+	char ch1[2];
+	scanf("%s", &ch1);
+	if (!strcmp(ch1, "#")) return NULL;
+	else
+	{
+		Tree1* p = (Tree1*)malloc(sizeof(Tree1));
+		p->data = *ch1;
+		printf("请输入%c的左孩子：",p->data);
+		p->lchild = CreateTree1();
+		printf("请输入%c的右孩子：",p->data);
+		p->rchild = CreateTree1();
+		return p;
+	}
+}
+//3.用广义表输出二叉树
+void DisplayTreeGYB(Tree1* T)
+{
+	if (T)
+	{
+		printf("%c", T->data);
+		if (T->lchild)
+		{
+			printf("(");
+			DisplayTreeGYB(T->lchild);
+			if (T->rchild)
+			{
+				printf("，");
+				DisplayTreeGYB(T->rchild);
+			}
+			printf(")");
+		}
+		else if (T->rchild)
+		{
+			printf("(");
+			DisplayTreeGYB(T->lchild);
+			if (T->rchild)
+			{
+				printf("，");
+				DisplayTreeGYB(T->rchild);
+			}
+			printf(")");
+		}
+	}
+}
+//4.统计
+ int leaf, node, depth;
+//4.1统计叶子节点数
+void Leafnum(Tree1* T)
+{
+	if (T) return;
+	if (!T->lchild && !T->rchild) leaf++;
+	Leafnum(T->lchild);
+	Leafnum(T->rchild);
+}
+//4.2求二叉树节点数总数
+void Nodenum(Tree1* T)
+{
+	if (T)
+	{
+		node++;
+		Nodenum(T->lchild);
+		Nodenum(T->rchild);
+	}
+}
+//4.3求二叉树的深度
+int TreeDepth(Tree1* T)
+{
+	int ldep, rdep;
+	if (T == NULL)
+	{
+		return 0;
+	}
+	else
+	{
+		ldep = TreeDepth(T->lchild);
+		rdep = TreeDepth(T->rchild);
+		if (ldep > rdep) return ldep + 1;
+		else return rdep + 1;
+	}
+}
+//5.哈夫曼树
+void InitHFTree(HFTree T[], int n)
+{
+	for (int i = 0; i < 2 * n - 1; i++)
+	{
+		T[i].lchild = T[i].parent = T[i].rchild = -1;
+		T[i].data = 100010;
+	}
+	for (int i = 0; i < n; i++)
+	{
+		printf("请输入第%d个结点的权值：", i + 1);
+		scanf("%d", &T[i].data);
+	}
+}
+void find_DMin(HFTree  T[], int size, int* a, int* b)
+{
+	int min = 100010;
+	for (int i = 0; i < size; i++)
+		if (min > T[i].data&&T[i].parent==-1)
+			min = T[i].data, * a = i;
+	min = 100010;
+	for (int i = 0; i < size; i++)
+		if (min> T[i].data && i != (*a)&&T[i].parent==-1)
+			min = T[i].data, * b = i;
+}
+void CreateHFTree(HFTree T[], int n)
+{
+
+	int min1,min2;
+	for (int i = n; i < 2 * n - 1; i++)
+	{
+		find_DMin(T, i, &min1, &min2);
+		T[min1].parent = T[min2].parent = i;
+		T[i].data = T[min1].data + T[min2].data;
+		T[i].lchild = min1, T[i].rchild = min2;
+	}
+}
+void HFBianMa(HFTree T[], int i, int j)
+{
+	j = T[i].parent;
+	if (j == -1)return;
+	HFBianMa(T, j, i);
+	if (T[j].lchild == i) printf("0");
+	else printf("1");
+}
+void StartBianMa(HFTree T[], int n)
+{
+	for (int i = 0; i < n; i++) HFBianMa(T, i, i),puts("");
+}

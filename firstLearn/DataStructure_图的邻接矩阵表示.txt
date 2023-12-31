@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+/* 
+//Date:2023-6-3
+//Auther:向加豪
+//Topic:头插法-尾插法建立单链表 
+*/
+typedef int DataType;
+////1.定义单链表 
+typedef struct node{
+	DataType Data;
+	struct node *next; 
+}Link_List;
+////2.初始化 
+Link_List* Init_Link_List()
+{
+	Link_List *head;
+	head=(Link_List*)malloc(sizeof(Link_List));
+	head->next=NULL; 
+	return head;
+}
+////3.头插法 
+void add_to_head(Link_List *head)
+{
+    Link_List *p;
+    int i,n;
+	printf("请输入有多少个节点：");
+	scanf("%d",&n);
+	for(i=0;i<n;i++)
+	{
+		int x;
+		printf("请输入第%d个值：",i+1);
+		scanf("%d",&x);
+		p=(Link_List*)malloc(sizeof(Link_List));
+		p->Data=x;
+		p->next=head->next;
+		head->next=p;
+	}
+}
+//4.尾插法
+void add_to_end(Link_List *head)
+{
+	Link_List *p,*last;
+	int i,n;
+	last=head;
+	printf("请输入有多少个节点：");
+	scanf("%d",&n);
+	for(i=0;i<n;i++)
+	{
+		int x;
+		printf("请输入第%d个值：",i+1);
+		scanf("%d",&x);	
+		p=(Link_List*)malloc(sizeof(Link_List));
+		p->Data=x;
+		p->next=NULL;
+		last->next=p;
+		last=p;
+	}
+}
+////6.输出单链表
+void disaplay(Link_List *head)
+{
+	int i;
+	while(head)
+	{	 
+	    head=head->next;
+		printf("%d ",head->Data);
+	}
+} 
+int main(int argc, char *argv[]) {
+	Link_List *head;
+	head=Init_Link_List();
+	add_to_head(head);
+	disaplay(head);
+	return 0;
+}
+#include<stdio.h>
+const int N=100010;
+typedef struct{
+	int key;
+}LineList;
+void Bubble_sort(LineList r[],int n)
+  {
+    int i,j,exchange;
+    for(i=1;i<n;i++)
+    {
+	exchange=0;
+	for(j=1;j<=n-i;j++)
+	if(r[j].key<r[j+1].key)
+	{
+	    exchange=1;
+	    r[0]=r[j];
+	    r[j]=r[i];
+	    r[i]=r[0];
+	}
+	if(exchange==0) break;
+    }
+}
+int main()
+{
+	int n,i;
+	scanf("%d",&n);
+	LineList a[N];
+	for(i=1;i<=n;i++) scanf("%d",&a[i].key);
+	Bubble_sort(a,n);
+	for(i=1;i<=n;i++) printf("%d ",a[i].key);
+	return 0;
+}
+//8
+//-4 8 6 47 43 24 4  -1
